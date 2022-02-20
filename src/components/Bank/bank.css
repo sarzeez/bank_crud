@@ -1,0 +1,28 @@
+.bank-header {
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.edit-delete-wrapper {
+    display: flex;
+    /* justify-content: center; */
+    column-gap: 10px;
+}
+
+.edit-delete-wrapper div {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ffe58f;
+    background-color: #fffbe6;
+    cursor: pointer;
+}
+
+.edit-delete-wrapper div:last-child {
+    background-color: #fff2f0;
+    border: 1px solid #ffccc7;
+}
