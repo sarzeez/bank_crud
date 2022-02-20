@@ -98,7 +98,7 @@ const Home = () => {
           navigate('/login')
           localStorage.removeItem('accessToken')
         })
-    }, [])
+    }, [navigate])
 
 
     return (

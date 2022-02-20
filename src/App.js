@@ -1,6 +1,5 @@
-import { useState } from "react";
 import {
-  BrowserRouter,
+  HashRouter as Router,
   Routes,
   Route,
   Navigate
@@ -11,21 +10,19 @@ import Login from './components/Login/Login';
 
 function App() {
 
-  const [user, setUser] = useState(true)
-
   return (
-      <BrowserRouter>
+      <Router>
         <Routes>
           <Route>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login setUser={setUser} />} />
+            <Route path="/login" element={<Login />} />
             <Route
                 path="*"
                 element={<Navigate to="/" />}
             />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </Router>
   );
 }
 

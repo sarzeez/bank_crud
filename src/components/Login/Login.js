@@ -5,9 +5,8 @@ import './login.css'
 
 import request from '../../services/api';
 
-const Login = (props) => {
+const Login = () => {
 
-    const { setUser } = props;
     const navigate = useNavigate()
 
     const onFinish = (values) => {
