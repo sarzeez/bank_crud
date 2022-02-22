@@ -1,5 +1,5 @@
-import React from 'react'
-import { Form, Input, Button } from 'antd';
+import React, { useState } from 'react'
+import { Form, Input, Button, Alert } from 'antd';
 import { useNavigate } from 'react-router-dom'
 import './login.css'
 
@@ -8,6 +8,8 @@ import request from '../../services/api';
 const Login = () => {
 
     const navigate = useNavigate()
+    const [error, setError] = useState('')
+    const [form] = Form.useForm();
 
     const onFinish = (values) => {
         request.auth.signin({
@@ -20,11 +22,14 @@ const Login = () => {
             })
             .catch(err => {
                 // console.log(err.response)
+                setError(err?.response?.data?.error)
+                form.resetFields();
             })
     };
     
     const onFinishFailed = (errorInfo) => {
-        // console.log('Failed:', errorInfo);
+        form.resetFields();
+        console.log(errorInfo)
     };
 
     return (
@@ -33,6 +38,7 @@ const Login = () => {
                 <Form
                     name="basic"
                     layout="vertical"
+                    form={form}
                     labelCol={{
                     span: 8,
                     }}
@@ -57,7 +63,7 @@ const Login = () => {
                                 },
                             ]}
                             >
-                            <Input />
+                            <Input/>
                         </Form.Item>
 
                         <Form.Item
@@ -72,6 +78,10 @@ const Login = () => {
                             >
                             <Input.Password />
                         </Form.Item>
+                        {
+                            error &&
+                            <Alert style={{marginBottom: '20px'}} message={error} type="error" />
+                        }
                         <Button type="primary" htmlType="submit">
                             Submit
                         </Button>

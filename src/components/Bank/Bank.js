@@ -31,6 +31,8 @@ const Bank = (props) => {
     status: item.status
   }))
   const [bankModal, setBankModal] = useState(false)
+  const [sortColumn, setSortColumn] = useState('1')
+  const [orderType, setOrderType] = useState('')
   const [bankInitialValues, setBankInitialValues] = useState({
     id: '0',
     bank_code: '',
@@ -38,18 +40,87 @@ const Bank = (props) => {
     state_id: 0
   })
 
+  const firstColumnSort = () => {
+    setSortColumn('1')
+    if(sortColumn !== '1') {
+      handleOrderType()
+      setOrderType('')
+    }
+    else {
+      handleOrderType()
+    }
+  }
+
+  const secondColumnSort = () => {
+    setSortColumn('2')
+    if(sortColumn !== '2') {
+      handleOrderType()
+      setOrderType('')
+    }
+    else {
+      handleOrderType()
+    }
+  }
+
+  const thirdColumnSort = () => {
+    setSortColumn('3')
+    if(sortColumn !== '3') {
+      handleOrderType()
+      setOrderType('')
+    }
+    else {
+      handleOrderType()
+    }
+  }
+
+  const handleOrderType = () => {
+    if(orderType === '') {
+      setOrderType('asc')
+    }
+    else if(orderType === 'asc') {
+      setOrderType('desc')
+    }
+    else {
+      setOrderType('')
+    }
+  }
+
   const columns = [
     {
       title: 'id',
       dataIndex: 'id',
+      onHeaderCell: () => {
+        return {
+          onClick: () => {
+            firstColumnSort()
+          }
+        };
+      },
+      sorter: true,
     },
     {
       title: 'code',
       dataIndex: 'code',
+      onHeaderCell: () => {
+        return {
+          onClick: () => {
+            secondColumnSort()
+          }
+        };
+      },
+      sorter: true,
     },
     {
       title: 'name',
       dataIndex: 'name',
+      onHeaderCell: () => {
+        return {
+          onClick: () => {
+            thirdColumnSort()
+          }
+        };
+      },
+      sorter: true,
     },
     {
       title: 'status',
@@ -109,21 +180,28 @@ const Bank = (props) => {
   return (
       <div>
           <div className='bank-header'>
-            <Search
-              style={{width: '300px'}}
-              placeholder="input search text"
-              onSearch={onSearch}
-              onChange={onChangeSearch}
-              enterButton
-              size='middle'
-            />
-            <Button
-              type="primary"
-              size='middle'
-              onClick={() => setBankModal(true)}
-            >
-              Add New
-            </Button>
+            {
+              bankModal 
+              ? '' 
+              :
+              <>
+                <Search
+                  style={{width: '300px'}}
+                  placeholder="input search text"
+                  onSearch={onSearch}
+                  onChange={onChangeSearch}
+                  enterButton
+                  size='middle'
+                />
+                <Button
+                  type="primary"
+                  size='middle'
+                  onClick={() => setBankModal(true)}
+                >
+                  Add New
+                </Button>
+              </>
+            }
           </div>
           {
             bankModal

@@ -54,7 +54,7 @@ const Home = () => {
         setLoading(false)
       })
       .catch(err => {
-        console.log(err.response)
+        // console.log(err.response)
       })
     }
 
