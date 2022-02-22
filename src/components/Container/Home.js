@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, message } from 'antd';
 import {
   UserOutlined,
   VideoCameraOutlined,
@@ -29,6 +29,8 @@ const Home = () => {
     const [currentPagination, setCurrentPagination] = useState(1)
     const [paginationLimit, setPaginationLimit] = useState(20)
     const [searchValue, setSearchValue] = useState('')
+    const [sortColumn, setSortColumn] = useState('')
+    const [orderType, setOrderType] = useState('')
 
     const toggle = () => {
         setState({
@@ -36,34 +38,12 @@ const Home = () => {
         })
     };
 
-    const getList = () => {
-      setLoading(true)
-      request.bank.getList({
-        Search : '',
-        SortColumn: '',
-        OrderType: '',
-        PageNumber: '',
-        PageLimit: '' 
-      })
-      .then(res => {
-        // console.log(res)
-        setGetListBank({
-          rows: res.data.rows,
-          total: res.data.total
-        })
-        setLoading(false)
-      })
-      .catch(err => {
-        // console.log(err.response)
-      })
-    }
-
     const onSearch = () => {
       setLoading(true)
       request.bank.getList({
         Search: searchValue,
-        SortColumn: '',
-        OrderType: '',
+        SortColumn: sortColumn,
+        OrderType: orderType,
         PageNumber: currentPagination,
         PageLimit: paginationLimit
       })
@@ -75,7 +55,7 @@ const Home = () => {
           setLoading(false)
         })
         .catch(err => {
-          console.log(err.response)
+          message.error(err?.response?.data?.error);
         })
     }
 
@@ -86,7 +66,7 @@ const Home = () => {
 
     useEffect(() => {
       onSearch()
-    }, [currentPagination, paginationLimit])
+    }, [currentPagination, paginationLimit, sortColumn ,orderType])
 
     useEffect(() => {
       request.auth.getUser()
@@ -94,7 +74,7 @@ const Home = () => {
           setUser(res.data)
         })
         .catch(err => {
-          // console.log(err.response)
+          message.error(err?.response?.data?.error);
           navigate('/login')
           localStorage.removeItem('accessToken')
         })
@@ -132,13 +112,14 @@ const Home = () => {
             <Bank
               loading={loading}
               getListBank={getListBank}
-              getList={getList}
               onSearch={onSearch}
               onChangeSearch={onChangeSearch}
               currentPagination={currentPagination}
               setCurrentPagination={setCurrentPagination}
               paginationLimit={paginationLimit}
               setPaginationLimit={setPaginationLimit}
+              setSortColumn={setSortColumn}
+              setOrderType={setOrderType}
             />
           </Content>
         </Layout>

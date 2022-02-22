@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Table, Input, Button } from 'antd';
+import { Table, Input, Button, message } from 'antd';
 import {
   EditOutlined,
   DeleteOutlined
@@ -14,13 +14,14 @@ const Bank = (props) => {
   const {
     loading,
     getListBank,
-    getList,
     currentPagination,
     setCurrentPagination,
     paginationLimit,
     setPaginationLimit,
     onSearch,
-    onChangeSearch
+    onChangeSearch,
+    setSortColumn,
+    setOrderType
   } = props;
   const { rows, total } = getListBank;
   const data = rows.map((item, index) => ({
@@ -31,8 +32,7 @@ const Bank = (props) => {
     status: item.status
   }))
   const [bankModal, setBankModal] = useState(false)
-  const [sortColumn, setSortColumn] = useState('1')
-  const [orderType, setOrderType] = useState('')
+  
   const [bankInitialValues, setBankInitialValues] = useState({
     id: '0',
     bank_code: '',
@@ -40,87 +40,24 @@ const Bank = (props) => {
     state_id: 0
   })
 
-  const firstColumnSort = () => {
-    setSortColumn('1')
-    if(sortColumn !== '1') {
-      handleOrderType()
-      setOrderType('')
-    }
-    else {
-      handleOrderType()
-    }
-  }
-
-  const secondColumnSort = () => {
-    setSortColumn('2')
-    if(sortColumn !== '2') {
-      handleOrderType()
-      setOrderType('')
-    }
-    else {
-      handleOrderType()
-    }
-  }
-
-  const thirdColumnSort = () => {
-    setSortColumn('3')
-    if(sortColumn !== '3') {
-      handleOrderType()
-      setOrderType('')
-    }
-    else {
-      handleOrderType()
-    }
-  }
-
-  const handleOrderType = () => {
-    if(orderType === '') {
-      setOrderType('asc')
-    }
-    else if(orderType === 'asc') {
-      setOrderType('desc')
-    }
-    else {
-      setOrderType('')
-    }
-  }
-
   const columns = [
     {
       title: 'id',
       dataIndex: 'id',
-      onHeaderCell: () => {
-        return {
-          onClick: () => {
-            firstColumnSort()
-          }
-        };
-      },
       sorter: true,
+      columnKey: 1
     },
     {
       title: 'code',
       dataIndex: 'code',
-      onHeaderCell: () => {
-        return {
-          onClick: () => {
-            secondColumnSort()
-          }
-        };
-      },
       sorter: true,
+      columnKey: 2
     },
     {
       title: 'name',
       dataIndex: 'name',
-      onHeaderCell: () => {
-        return {
-          onClick: () => {
-            thirdColumnSort()
-          }
-        };
-      },
       sorter: true,
+      columnKey: 3
     },
     {
       title: 'status',
@@ -160,10 +97,10 @@ const Bank = (props) => {
     if(state) {
       request.bank.deleteItem(id)
         .then(() => {
-          getList()
+          onSearch()
         })
         .catch(err => {
-          console.log(err.response)
+          message.error(err?.response?.data?.error);
         })
     }
   }
@@ -173,8 +110,21 @@ const Bank = (props) => {
     setPaginationLimit(pageSize)
   }
 
-  const onShowSizeChange = (current, size) => {
+  const onShowSizeChange = (_current, _size) => {
     // setCurrentPagination(current)
+  }
+
+  const onChangeTable = (_pagination, _filters, sorter, _extra) => {
+    setSortColumn(sorter?.column?.columnKey ? sorter.column.columnKey : '')
+    if(sorter.order === 'ascend') {
+      setOrderType('asc')
+    }
+    else if(sorter.order === 'descend') {
+      setOrderType('desc')
+    }
+    else {
+      setOrderType('')
+    }
   }
 
   return (
@@ -209,12 +159,13 @@ const Bank = (props) => {
                 setBankModal={setBankModal}
                 setBankInitialValues={setBankInitialValues}
                 bankInitialValues={bankInitialValues}
-                getList={getList}
+                onSearch={onSearch}
               />
             : <Table
                 loading={loading}
                 columns={columns}
                 dataSource={data}
+                onChange={onChangeTable}
                 pagination={{
                   pageSize: paginationLimit,
                   total,
@@ -222,7 +173,6 @@ const Bank = (props) => {
                   onChange: onChanePagination,
                   onShowSizeChange,
                   showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`
-                  // defaultCurrent: currentPagination
                 }}
               />
           }

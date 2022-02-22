@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Form, Input, Button, Alert, Select } from 'antd';
+import { Form, Input, Button, Alert, Select, message } from 'antd';
 import request from '../../services/api';
 const { Option } = Select
 
 
 const AddEdit = (props) => {
 
-    const { setBankModal, setBankInitialValues,  bankInitialValues, getList } = props;
+    const { setBankModal, setBankInitialValues,  bankInitialValues, onSearch } = props;
     const [error, setError] = useState('')
     const [stateIDOptions, setStateIDOptions] = useState([])
     const [form] = Form.useForm();
@@ -21,7 +21,7 @@ const AddEdit = (props) => {
             .then(res => {
                 form.resetFields();
                 setBankModal(false)
-                getList()
+                onSearch()
                 setBankInitialValues({
                     id: '0',
                     bank_code: '',
@@ -31,6 +31,7 @@ const AddEdit = (props) => {
             })
             .catch(err => {
                 setError(err?.response?.data?.error)
+                message.error(err?.response?.data?.error);
                 form.resetFields();
             })
     };
